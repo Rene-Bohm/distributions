@@ -1,8 +1,8 @@
 mod xoroshiro256starstar;
-pub use xoroshiro256starstar::*; 
+pub use xoroshiro256starstar::*;
 
-mod gen;
-pub use gen::*;
+mod splitmix;
+pub use splitmix::*;
 
 mod lcg;
 pub use lcg::Lcg;

@@ -1,4 +1,3 @@
-pub mod distributions;
+pub mod distribution;
+pub mod helper;
 pub mod pseudo;
-pub mod shift;
-pub mod int;
