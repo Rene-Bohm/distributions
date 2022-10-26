@@ -1,7 +1,7 @@
-use std::array;
+use std::mem;
 
 pub struct Shiro {
-    Shiro: [u64; 4],
+    shiro: [u64; 4],
     old_shiro: [u64; 4],
     recent_rand: Option<u64>,
 }
@@ -9,34 +9,63 @@ pub struct Shiro {
 impl Shiro {
     pub fn new(buffer: [u64; 4]) -> Self {
         Shiro {
-            Shiro: buffer,
+            shiro: buffer,
             old_shiro: buffer,
             recent_rand: None,
         }
     }
 
     pub fn call(&mut self) -> u64 {
-        let Shiro = &mut self.Shiro;
-        let result = rol64(7, Shiro[1].wrapping_mul(5)).wrapping_mul(9);
-        let t = Shiro[1] << 17;
+        let shiro = &mut self.shiro;
+        let result = rol64(7, shiro[1].wrapping_mul(5)).wrapping_mul(9);
+        let t = shiro[1] << 17;
 
-        Shiro[2] ^= Shiro[0];
-        Shiro[3] ^= Shiro[1];
-        Shiro[1] ^= Shiro[2];
-        Shiro[0] ^= Shiro[3];
-        Shiro[2] ^= t;
-        Shiro[3] = rol64(45, Shiro[3]);
+        shiro[2] ^= shiro[0];
+        shiro[3] ^= shiro[1];
+        shiro[1] ^= shiro[2];
+        shiro[0] ^= shiro[3];
+        shiro[2] ^= t;
+        shiro[3] = rol64(45, shiro[3]);
 
         result
     }
 
     pub fn reset(&mut self) {
-        self.Shiro = self.old_shiro;
+        self.shiro = self.old_shiro;
         self.recent_rand = None;
     }
 
     pub fn recent(&self) -> Option<u64> {
         self.recent_rand
+    }
+
+    pub fn call_f64(&mut self) -> f64 {
+        let shiro = &mut self.shiro;
+        let value = rol64(7, shiro[1].wrapping_mul(5)).wrapping_mul(9);
+        let t = shiro[1] << 17;
+
+        shiro[2] ^= shiro[0];
+        shiro[3] ^= shiro[1];
+        shiro[1] ^= shiro[2];
+        shiro[0] ^= shiro[3];
+        shiro[2] ^= t;
+        shiro[3] = rol64(45, shiro[3]);
+
+        let float_size = mem::size_of::<f64>() as u32 * 8;
+        //Fraction bits = 53  + 1
+        let scale = 1.0 / (((1 as u64) << 54) as f64);
+
+        let value = value >> (float_size - 54);
+        scale * value as f64
+
+        /*
+
+        $ty:ident, $uty:ident, $f_scalar:ident, $u_scalar:ty,
+         $fraction_bits:expr, $exponent_bias:expr)
+
+         float_impls! { f64, u64, f64, u64, 52, 1023 }
+
+        */
     }
 }
 
@@ -53,32 +82,3 @@ pub fn rol64(shift: i16, buffer: u64) -> u64 {
     }
     */
 }
-
-/*
-
-const std::uint64_t result = detail::RotL(m_shiro[1] * 5, 7) * 9;
-        const std::uint64_t t = m_shiro[1] << 17;
-        m_shiro[2] ^= m_shiro[0];
-        m_shiro[3] ^= m_shiro[1];
-        m_shiro[1] ^= m_shiro[2];
-        m_shiro[0] ^= m_shiro[3];
-        m_shiro[2] ^= t;
-        m_shiro[3] = detail::RotL(m_shiro[3], 45);
-        return result;
-
-        let result: u64 = rol64(self.Shiro[1].wrapping_mul(5), 7).wrapping_mul(9);
-        let t: u64 = self.Shiro[1].rotate_left(17);
-
-        self.Shiro[2] ^= self.Shiro[0];
-        self.Shiro[3] ^= self.Shiro[1];
-        self.Shiro[1] ^= self.Shiro[2];
-        self.Shiro[0] ^= self.Shiro[3];
-
-        self.Shiro[2] = t;
-        self.Shiro[3] = rol64(self.Shiro[3] as u32, 45);
-
-        self.recent_rand = Some(result);
-        result
-
-
-*/

@@ -4,7 +4,7 @@ use plotters::prelude::*;
 const OUT_FILE_NAME: &'static str = "img/bar.png";
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut buffer: [u64; 4] = [0, 0, 0, 0];
-    let mut gen = splitmix64_state { seed: 668941 };
+    let mut gen = Splitmix64 { seed: 668941 };
 
     for i in 0..4 {
         buffer[i] = gen.call();
@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("{:?}", buffer);
 
-    let mut rand = State::new(buffer);
+    let mut rand = Shiro::new(buffer);
 
     let mut data: Vec<u32> = Vec::with_capacity(10000);
 
