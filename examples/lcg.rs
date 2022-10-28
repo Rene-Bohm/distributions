@@ -1,7 +1,6 @@
-use distributions::{helper::Bound, pseudo::*};
+use distributions::helper::Bound;
 use plotters::prelude::*;
 
-const OUT_FILE_NAME: &'static str = "img/bar.png";
 fn main() {
     let g = distributions::pseudo::Lcg::instantiate(16807, 123456789, 10000);
     let u = g.call();
@@ -12,7 +11,7 @@ fn main() {
     let mut end = 0.05;
     let mut bounds: Vec<Bound> = Vec::with_capacity(20);
 
-    for i in 0..20 {
+    for _i in 0..20 {
         bounds.push(Bound::instantiate(start, end));
         start += 0.05;
         end += 0.05;

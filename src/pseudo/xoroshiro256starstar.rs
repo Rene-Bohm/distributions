@@ -53,7 +53,7 @@ impl Shiro {
 
         let float_size = mem::size_of::<f64>() as u32 * 8;
         //Fraction bits = 53  + 1
-        let scale = 1.0 / (((1 as u64) << 54) as f64);
+        let scale = 1.0 / ((((1 as u64) << 54) as f64) - 1.0);
 
         let value = value >> (float_size - 54);
         scale * value as f64
