@@ -2,14 +2,24 @@ use distributions::distribution::*;
 use plotters::prelude::*;
 use std::error::Error;
 
-const OUT_FILE_NAME: &'static str = "img/exponential.png";
+const OUT_FILE_NAME: &'static str = "img/geometric.png";
 
 fn main() -> Result<(), Box<dyn Error>> {
     let root = BitMapBackend::new(OUT_FILE_NAME, (1024, 768)).into_drawing_area();
 
-    let mut gen = Exponential::<u64, u64>::new(1337, 0.1, u64::MIN, u64::MAX);
+    let mut gen = Geometric::<u64>::new(1337, 0.3, u64::MIN, u64::MAX);
 
     let data = gen.set(10000);
+
+    let mut avg = 0.0;
+    let mut c = 0;
+    for i in 0..10000{
+
+        avg += data[i] as f64;
+        if data[i] == 0{ c += 1;}
+    }
+
+    println!("-{}, {}", c, avg/10000.0);
 
     root.fill(&WHITE)?;
 
@@ -17,8 +27,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         .x_label_area_size(35)
         .y_label_area_size(40)
         .margin(5)
-        .caption("Poisson Test", ("sans-serif", 50.0))
-        .build_cartesian_2d((0u64..20u64).into_segmented(), 0i32..2000i32)?;
+        .caption("Geometric Test", ("sans-serif", 50.0))
+        .build_cartesian_2d((0u64..20u64).into_segmented(), 0i32..3000i32)?;
 
     chart
         .configure_mesh()
@@ -32,7 +42,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     chart.draw_series(
         Histogram::vertical(&chart)
             .style(RED.mix(0.5).filled())
-            .margin(3)
             .data(data.iter().map(|x: &u64| (*x, 1))),
     )?;
 

@@ -1,20 +1,11 @@
-mod binomial;
-pub use binomial::*;
+mod continuous;
+pub use continuous::*;
 
-mod exponential;
-pub use exponential::*;
+mod discrete;
+pub use discrete::*;
 
-mod normal;
-pub use normal::*;
-
-mod picker;
-pub use picker::*;
-
-mod poisson;
-pub use poisson::*;
-
-mod uniform;
-pub use uniform::*;
+mod misc;
+pub use misc::*;
 
 mod traits;
 pub use traits::*;

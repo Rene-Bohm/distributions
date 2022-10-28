@@ -1,4 +1,4 @@
-use super::{Call, Discrete, Set, Uniform, Unsigned};
+use super::super::{Call, Discrete, Set, Uniform, Unsigned};
 
 pub struct Exponential<U, T>
 where

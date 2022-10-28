@@ -1,6 +1,4 @@
-use std::fmt::Display;
-
-use super::{Call, Discrete, Set, Uniform, Unsigned};
+use super::super::{Call, Discrete, Set, Uniform, Unsigned};
 
 pub struct Poisson<U, T>
 where
@@ -88,7 +86,7 @@ impl Set<u64> for Poisson<u64, u64> {
 
 #[cfg(test)]
 mod test {
-    use crate::distribution::{Call, Set};
+    use crate::distribution::Set;
 
     use super::Poisson;
 

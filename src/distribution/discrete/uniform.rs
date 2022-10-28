@@ -1,8 +1,7 @@
 use std::fmt::Display;
 
 use crate::pseudo::{Shiro, Splitmix64};
-
-use super::{Call, Set};
+use super::super::{Call, Set};
 
 pub struct Uniform<T> {
     rand: Box<Shiro>,

@@ -1,6 +1,6 @@
 use crate::pseudo::{Shiro, Splitmix64};
 
-use super::{Call, Set};
+use super::super::{Call, Set};
 
 pub struct Binomial<T> {
     rand: Box<Shiro>,
