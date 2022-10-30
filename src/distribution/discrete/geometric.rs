@@ -1,4 +1,4 @@
-use super::super::{Call, Discrete, Set, Uniform, Unsigned};
+use super::super::{Call, Discrete, Set, Uniform};
 
 pub struct Geometric<U>
 where

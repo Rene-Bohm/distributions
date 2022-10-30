@@ -1,16 +1,21 @@
-use crate::pseudo::{Shiro, Splitmix64};
+use crate::{pseudo::{Shiro, Splitmix64}, distribution::Discrete};
 
 use super::super::{Call, Set};
 
-pub struct Binomial<T> {
+pub struct Binomial<T> 
+where
+T: Discrete + PartialOrd,{
     rand: Box<Shiro>,
     num_of_trials: usize,
     propability: f64,
-    output: Option<Vec<T>>,
+    upper_bound: T,
+    lower_bound: T,
 }
 
-impl<T> Binomial<T> {
-    pub fn new(seed: u64, trials: usize, prob: f64) -> Self {
+impl<T> Binomial<T> 
+where
+T: Discrete + PartialOrd,{
+    pub fn new(seed: u64, trials: usize, prob: f64, lower: T, upper: T) -> Self {
         let mut splitmix = Splitmix64 { seed: seed };
 
         let shiro = Shiro::new(splitmix.call_256());
@@ -19,13 +24,18 @@ impl<T> Binomial<T> {
             rand: Box::new(shiro),
             num_of_trials: trials,
             propability: prob,
-            output: None,
+            upper_bound: upper,
+            lower_bound: lower,
         }
     }
 
     pub fn change(&mut self, trials: usize, prob: f64) {
         self.num_of_trials = trials;
         self.propability = prob;
+    }
+    pub fn change_bound(&mut self, lower: T, upper: T) {
+        self.upper_bound = upper;
+        self.lower_bound = lower;
     }
 }
 
@@ -101,14 +111,14 @@ mod test {
 
     #[test]
     fn call() {
-        let mut bin = Binomial::<u64>::new(1337, 100, 0.75);
+        let mut bin = Binomial::<u64>::new(1337, 100, 0.75, 0, 1);
 
         println!("{}", bin.call());
     }
 
     #[test]
     fn set() {
-        let mut bin = Binomial::<u64>::new(1337, 100, 0.75);
+        let mut bin = Binomial::<u64>::new(1337, 100, 0.75, 0, 1);
 
         println!("{:?}", bin.set(15));
     }

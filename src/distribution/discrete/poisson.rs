@@ -39,7 +39,7 @@ where
 
 impl Call<u64> for Poisson<u64, u64> {
     fn call(&mut self) -> u64 {
-        let diff = self.upper_bound - self.lower_bound;
+        //let diff = self.upper_bound - self.lower_bound;
 
         let vec = self.generator.set((5 * self.lambda) as usize);
         let mut x = 0 as u64;

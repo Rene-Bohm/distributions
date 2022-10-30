@@ -1,11 +1,33 @@
-use distributions::distribution::*;
+
+
+use distributions::distribution::{Set, Normal};
 use plotters::prelude::*;
 
-const OUT_FILE_NAME: &'static str = "img/bino_f64.png";
+const OUT_FILE_NAME: &'static str = "img/normal_f64.png";
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut uni = Binomial::<u64>::new(3123485, 100, 0.75,0,1);
+    let mut uni = Normal::<f64>::new(1337, 0.75, 10.0, 0.0, 1.0);
 
     let data = uni.set(10000);
+
+    let mut count = 0;
+
+    for i in 0..data.len() {
+        if data[i] < 1.0 {
+            count += 1;
+        }
+    }
+
+    println!("--{}", count);
+
+    let mut avg = 0.0;
+    for i in 0..10000{
+
+        avg += data[i] as f64;
+
+    }
+
+    println!("--{}", avg/10000.0);
+
 
     let root = BitMapBackend::new(OUT_FILE_NAME, (640 * 3, 480 * 3)).into_drawing_area();
 
@@ -15,8 +37,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .x_label_area_size(35)
         .y_label_area_size(40)
         .margin(5)
-        .caption("Binomial Test", ("sans-serif", 50.0))
-        .build_cartesian_2d((0u64..120u64).into_segmented(), 0i32..1250i32)?;
+        .caption("Histogram Test", ("sans-serif", 50.0))
+        .build_cartesian_2d(
+            (0.0f64..20.1f64).step(0.2).use_floor().into_segmented(),
+            0i32..1250i32,
+        )?;
 
     chart
         .configure_mesh()
@@ -31,7 +56,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Histogram::vertical(&chart)
             .style(RED.mix(0.5).filled())
             .margin(3)
-            .data(data.iter().map(|x: &u64| (*x, 1))),
+            .data(data.iter().map(|x: &f64| (*x, 1))),
     )?;
 
     // To avoid the IO failure being ignored silently, we manually call the present function
